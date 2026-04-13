@@ -96,8 +96,8 @@ function App() {
       </table>
       {selectedAlert !== null && (
         <RuxDialog open={true} header="Alert Details" onRuxdialogclosed={() => setSelectedAlert(null)}>
-          <p><strong>Satellite</strong> {setSelectedAlert.contactSatellite}</p>
-          <p><strong>Detail</strong>{setSelectedAlert.contactDetail}</p>
+          <p><strong>Satellite:</strong> {selectedAlert.contactSatellite}</p>
+          <p><strong>Detail:</strong> {selectedAlert.contactDetail}</p>
         </RuxDialog>
       )}
     </div>
