@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { RuxDialog } from '@astrouxds/react';
 import alertData from './data/data.json';
 import { flattenAlerts } from './utils/transformAlerts';
 import './App.css';
@@ -6,6 +7,7 @@ import './App.css';
 function App() {
   const [severityFilter, setSeverityFilter] = useState('all');
   const [acknowledgedIds, setAcknowledgedIds] = useState([]);
+  const [selectedAlert, setSelectedAlert] = useState(null);
 
   const allAlerts = flattenAlerts(alertData);
 
@@ -16,6 +18,7 @@ function App() {
     filteredAlerts = allAlerts.filter((alert) => alert.errorSeverity === severityFilter);
   }
 
+  // get the latest alerts
   const sortedAlerts = [...filteredAlerts].sort((a, b) => b.errorTime - a.errorTime);
 
   function acknowledge(errorId) {
@@ -75,6 +78,10 @@ function App() {
                 <td>{alert.contactName}</td>
                 <td>{formatTime(alert.contactBeginTimestamp)} - {formatTime(alert.contactEndTimestamp)}</td>
                 <td>
+                  <button onClick={() => setSelectedAlert(alert)}>
+                    Show Details
+                  </button>
+                  {' '}
                   <button
                     disabled={isAcked}
                     onClick={() => acknowledge(alert.errorId)}
@@ -87,6 +94,12 @@ function App() {
           })}
         </tbody>
       </table>
+      {selectedAlert !== null && (
+        <RuxDialog open={true} header="Alert Details" onRuxdialogclosed={() => setSelectedAlert(null)}>
+          <p><strong>Satellite</strong> {setSelectedAlert.contactSatellite}</p>
+          <p><strong>Detail</strong>{setSelectedAlert.contactDetail}</p>
+        </RuxDialog>
+      )}
     </div>
   );
 }
