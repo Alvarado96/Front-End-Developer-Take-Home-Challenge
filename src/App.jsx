@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { RuxDialog, RuxTable, RuxTableHeader, RuxTableHeaderRow, RuxTableHeaderCell, RuxTableBody, RuxTableRow, RuxTableCell, RuxButton, RuxSelect, RuxOption } from '@astrouxds/react';
 import alertData from './data/data.json';
 import { flattenAlerts } from './utils/transformAlerts';
 import './App.css';
@@ -6,6 +7,7 @@ import './App.css';
 function App() {
   const [severityFilter, setSeverityFilter] = useState('all');
   const [acknowledgedIds, setAcknowledgedIds] = useState([]);
+  const [selectedAlert, setSelectedAlert] = useState(null);
 
   const allAlerts = flattenAlerts(alertData);
 
@@ -16,6 +18,7 @@ function App() {
     filteredAlerts = allAlerts.filter((alert) => alert.errorSeverity === severityFilter);
   }
 
+  // get the latest alerts
   const sortedAlerts = [...filteredAlerts].sort((a, b) => b.errorTime - a.errorTime);
 
   function acknowledge(errorId) {
@@ -35,58 +38,67 @@ function App() {
     <div style={{ padding: '20px' }}>
       <h1>GRM Alerts Dashboard</h1>
 
-      <label>
-        Filter by severity:{' '}
-        <select
-          value={severityFilter}
-          onChange={(e) => setSeverityFilter(e.target.value)}
-        >
-          <option value="all">All</option>
-          <option value="critical">Critical</option>
-          <option value="serious">Serious</option>
-          <option value="caution">Caution</option>
-          <option value="warning">Warning</option>
-        </select>
-      </label>
+      <RuxSelect
+        label="Filter by severity"
+        value={severityFilter}
+        onRuxchange={(e) => setSeverityFilter(e.target.value)}
+      >
+        <RuxOption value="all" label="All" />
+        <RuxOption value="critical" label="Critical" />
+        <RuxOption value="serious" label="Serious" />
+        <RuxOption value="caution" label="Caution" />
+        <RuxOption value="warning" label="Warning" />
+      </RuxSelect>
+
 
       <p>Showing {sortedAlerts.length} alerts</p>
 
-      <table border="1" cellPadding="8" cellSpacing="0" style={{ width: '100%' }}>
-        <thead>
-          <tr>
-            <th>Severity</th>
-            <th>Alert Message</th>
-            <th>Contact Name</th>
-            <th>Contact Time</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      <RuxTable border="1" cellPadding="8" cellSpacing="0" style={{ width: '100%' }}>
+        <RuxTableHeader>
+          <RuxTableHeaderRow>
+            <RuxTableHeaderCell>Severity</RuxTableHeaderCell>
+            <RuxTableHeaderCell>Alert Message</RuxTableHeaderCell>
+            <RuxTableHeaderCell>Contact Name</RuxTableHeaderCell>
+            <RuxTableHeaderCell>Contact Time</RuxTableHeaderCell>
+            <RuxTableHeaderCell>Actions</RuxTableHeaderCell>
+          </RuxTableHeaderRow>
+        </RuxTableHeader>
+        <RuxTableBody>
           {sortedAlerts.map((alert, index) => {
             const isAcked = acknowledgedIds.includes(alert.errorId);
 
             return (
-              <tr
+              <RuxTableRow
                 key={alert.errorId + '-' + index}
                 style={{ opacity: isAcked ? 0.4 : 1 }}
               >
-                <td>{alert.errorSeverity}</td>
-                <td>{alert.errorMessage}</td>
-                <td>{alert.contactName}</td>
-                <td>{formatTime(alert.contactBeginTimestamp)} - {formatTime(alert.contactEndTimestamp)}</td>
-                <td>
-                  <button
+                <RuxTableCell>{alert.errorSeverity}</RuxTableCell>
+                <RuxTableCell>{alert.errorMessage}</RuxTableCell>
+                <RuxTableCell>{alert.contactName}</RuxTableCell>
+                <RuxTableCell>{formatTime(alert.contactBeginTimestamp)} - {formatTime(alert.contactEndTimestamp)}</RuxTableCell>
+                <RuxTableCell>
+                  <RuxButton onClick={() => setSelectedAlert(alert)}>
+                    Show Details
+                  </RuxButton>
+                  {' '}
+                  <RuxButton
                     disabled={isAcked}
                     onClick={() => acknowledge(alert.errorId)}
                   >
                     {isAcked ? 'Acknowledged' : 'Acknowledge'}
-                  </button>
-                </td>
-              </tr>
+                  </RuxButton>
+                </RuxTableCell>
+              </RuxTableRow>
             );
           })}
-        </tbody>
-      </table>
+        </RuxTableBody>
+      </RuxTable>
+      {selectedAlert !== null && (
+        <RuxDialog open={true} header="Alert Details" onRuxdialogclosed={() => setSelectedAlert(null)}>
+          <p><strong>Satellite:</strong> {selectedAlert.contactSatellite}</p>
+          <p><strong>Detail:</strong> {selectedAlert.contactDetail}</p>
+        </RuxDialog>
+      )}
     </div>
   );
 }
