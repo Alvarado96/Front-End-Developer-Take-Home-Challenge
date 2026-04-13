@@ -9,6 +9,7 @@ export function flattenAlerts(contacts) {
             result.push({
                 errorId: alert.errorId,
                 errorSeverity: alert.errorSeverity,
+                errorCategory: alert.errorCategory,
                 errorMessage: alert.errorMessage,
                 longMessage: alert.longMessage,
                 errorTime: alert.errorTime,

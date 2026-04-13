@@ -1,16 +1,64 @@
-# React + Vite
+# GRM Alerts Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based dashboard for Ground Resources Management (GRM) operators to monitor, review, and acknowledge satellite contact alerts. Built with the [Astro UXDS](https://astrouxds.com/) component library.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Alert Table** — Displays all alerts with severity, message, contact name, and contact time window
+- **Severity Filtering** — Filter alerts by severity level (Critical, Serious, Caution, Warning)
+- **Sorted by Recency** — Alerts are sorted by error time with the most recent at the top
+- **Alert Details** — Click "Show Details" to view satellite and contact detail information in a dialog
+- **Acknowledge Alerts** — Mark alerts as acknowledged to track which have been reviewed; acknowledged alerts are visually distinct and cannot be un-acknowledged
+- **Astro UXDS Status Indicators** — Severity levels are displayed using Astro status symbols for quick visual identification
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js (v18+)
+- npm
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Installation
+
+```bash
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Tech Stack
+
+- **React 19** — UI framework
+- **Vite** — Build tool and dev server
+- **Astro UXDS** — Component library and design system for space operations UIs
+- **ESLint** — Code linting
+
+## Project Structure
+
+```
+src/
+├── App.jsx              # Main application component
+├── App.css              # Application styles
+├── main.jsx             # Entry point
+├── index.css            # Global styles
+├── data/
+│   └── data.json        # GRM contact and alert data
+└── utils/
+    └── transformAlerts.js  # Flattens nested alert data for display
+```
